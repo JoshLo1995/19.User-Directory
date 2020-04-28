@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import Table from './components/table.js';
-import Row from './components/row.js';
 
 
 function App() {

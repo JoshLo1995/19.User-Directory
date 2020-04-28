@@ -1,20 +1,30 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import Row from './row.js';
+import TableRow from './row.js';
 
 export default class Table extends React.Component {
-    state = {
-        employeeResults: []
+    constructor(props) {
+        super(props);
+        this.state = {
+            employeeResults: [],
+            numResults: 10,
+        }
     }
+
     apiCall = () => {
-        const URLBase = 'https://randomuser.me/api/'
-        const URLSuffix = '?results=10' // Change number at end to change number of results
+        const URLBase = 'https://randomuser.me/api/';
+        const numResults = 10;
+        const URLSuffix = `?results=${numResults}`; // Change number at end to change number of results
         const URL = `${URLBase + URLSuffix}`;
         axios.get(URL)
             .then((res => {
-
-                this.setState({employeeResults: res.data.results}) // Full array of results 
+                console.log("This runs first");
+                // console.log(res.data.results);
+                this.setState(
+                    {
+                        employeeResults: res.data.results,
+                    }
+                ) // Full array of objects
 
             }))
             .catch((err) => {
@@ -26,8 +36,11 @@ export default class Table extends React.Component {
             })
     }
 
+
+
     componentDidMount() {
         this.apiCall();
+        
     }
 
     sortTable() {
@@ -39,17 +52,27 @@ export default class Table extends React.Component {
     }
 
     render() {
-        return (
+        return(
+
+            <div>
+                <TableRow employeeResults = {this.state.employeeResults}>0</TableRow>
+            
+            </div>
+
+
+        );
             // <table>
             //     <tr>
             //         <td>
             //             'Headings'
             //         </td>
             //     </tr>
-            //     {/* <Row employeeInfo={this.employeeResults}></Row> */}
+            //     <Row>
+            //     </Row>
+                // {/* <Row employeeInfo={`${this.state.employeeResults}`}></Row> */}
             // </table>
-            <div>{this.state.employeeResults}</div>
-        );
+            // // <div>{this.state.employeeResults}</div>
+        
     }
 
 }
