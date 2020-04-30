@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import TableRow from './row.js';
+import SearchForm from './searchForm';
 
 export default class Table extends React.Component {
     constructor(props) {
@@ -8,7 +9,11 @@ export default class Table extends React.Component {
         this.state = {
             employeeResults: [],
             numResults: 10,
+            isSorted: false,
+            searchQuery: '',
         }
+
+        // document.getElementById("emailSort").addEventListener('click', this.sortTable)
     }
 
     apiCall = () => {
@@ -43,20 +48,84 @@ export default class Table extends React.Component {
         
     }
 
-    sortTable() {
+    invert() {
+        let invertedUsers = this.state.employeeResults.sort(
+            (a,b) => 
+                (a.email < b.email) ? 1 : -1
+        )
+
+        this.setState(
+            {
+                isSorted: false,
+                employeeResults: invertedUsers
+            }
+        );
+
+        console.log(this.state.employeeResults);
 
     }
 
-    filterTable() {
+    // Sort by email alphabetically and then numerically
+    sortTable() {
+        let sortedUsers = this.state.employeeResults.sort(
+            (a,b) => 
+                (a.email > b.email) ? 1 : -1
+        )
 
+        this.setState(
+            {
+                isSorted: true
+            }
+        );
+
+        console.log(sortedUsers);
+        this.setState(
+            {
+                employeeResults: sortedUsers
+            }
+        )
+    }
+
+    filterCallback = (childData) => {
+        this.setState(
+            {
+                employeeResults: childData
+            }
+        );
     }
 
     render() {
         return(
 
             <div>
-                <TableRow employeeResults = {this.state.employeeResults}>0</TableRow>
-            
+                <SearchForm
+                    employeeResults = {this.state.employeeResults}
+                    filterCallback = {this.filterCallback}>
+                </SearchForm>
+                <table>
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Location
+                        </th>
+                        <th>
+                            <button id = "emailSort" onClick = {() => {
+                                if (!this.state.isSorted) {
+                                    this.sortTable();
+                                } else {
+                                    this.invert();
+                                } 
+                            }}
+                            >email</button>
+                        </th>
+                    </tr>
+                </thead>
+                    <TableRow employeeResults = {this.state.employeeResults}></TableRow>
+                
+                </table>
             </div>
 
 
